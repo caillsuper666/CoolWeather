@@ -64,7 +64,6 @@ public class ChooseAreaFragment extends Fragment {
 
     private List<County> countyList;
 
-
     private Province selectedProvince;
 
 
@@ -103,8 +102,8 @@ public class ChooseAreaFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 // 设置 ListView 和 Button 的点击事件
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (currentLevel == LEVEL_PROVINCE) {
                 selectedProvince = provinceList.get(position);
@@ -112,13 +111,20 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
-                }else if(currentLevel==LEVEL_COUNTY){
-                    String weatherId = countyList.get(position).getWeatherId();
+                }else if(currentLevel==LEVEL_COUNTY) {
+                String weatherId = countyList.get(position).getWeatherId();
+                if (getActivity() instanceof WeatherActivity) {
+                    WeatherActivity activity = (WeatherActivity)getActivity();
+                    activity.drawerLayout.closeDrawers();
+                    activity.swipeRefreshLayout.setRefreshing(true);
+                    activity.requestWeather(weatherId);
+                } else if (getActivity() instanceof MainActivity) {
                     Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
+                    intent.putExtra("weather_id", weatherId);
                     startActivity(intent);
                     getActivity().finish();
                 }
+            }
             }
 
         });
@@ -277,6 +283,10 @@ public class ChooseAreaFragment extends Fragment {
 
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
+            private void onFailure() {
+                onFailure( );
+            }
+
             @Override
             public void onFailure(@NotNull okhttp3.Call call, @NotNull IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
