@@ -62,7 +62,7 @@ public class WeatherActivity extends AppCompatActivity {
             View decorView = getWindow().getDecorView(); // 获取DecorView
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             |View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-    ); // 改变系统UI
+    ); // 改变系统UI.....
         getWindow().setStatusBarColor(Color.TRANSPARENT); // 设置透明
     }
         setContentView(R.layout.activity_weather);
